@@ -9,8 +9,6 @@ protected:
     Vector2f position;
     float paddleHeight;
     float paddleWidth;
-
-    // A RectangleShape object
     RectangleShape paddleShape;
 
     float paddleSpeed = 300.0f;
@@ -24,9 +22,9 @@ public:
 
     RectangleShape getShape();
 
-    void moveUp(float timeElapsed);//move up
+    void moveUp(float timeElapsed);
 
-    void moveDown(float timeElapsed);//move down
+    void moveDown(float timeElapsed);
 
     void update(float timeElapsed);
     void reset(float startX, float startY);

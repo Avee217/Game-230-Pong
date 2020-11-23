@@ -1,11 +1,9 @@
-//#include "stdafx.h"
 #include "Paddle.h"
 
-// This is the constructor and it is called when we create an object
 Paddle::Paddle(float startX, float startY)
 {
     
-    paddleHeight = 600;
+    paddleHeight = 100;
     paddleWidth = 5;
     position.x = startX;
     position.y = startY-paddleHeight/2.0f;
@@ -30,10 +28,9 @@ RectangleShape Paddle::getShape()
     return paddleShape;
 }
 
-//change to .y for up and down
 void Paddle::moveUp(float timeElapsed)
 {
-    if (position.y >= (0+paddleHeight/2))
+    if (position.y >= (0))
         position.y -= paddleSpeed * timeElapsed;
     
 }
@@ -52,12 +49,12 @@ void Paddle::update(float timeElapsed)
 void Paddle::reset(float startX, float startY)
 {
     position.x = startX;
-    position.y = startY - paddleHeight / 2.0;;
+    position.y = startY - paddleHeight / 2.0f;
 }
 
 AIPaddle::AIPaddle(float startX, float startY):Paddle(startX, startY)
 {
-    setSpeed(300.0f);
+    setSpeed(200.0f);
 }
 
 int AIPaddle::aiMove(FloatRect ballPosition) {

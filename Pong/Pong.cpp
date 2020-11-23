@@ -1,4 +1,3 @@
-//#include "stdafx.h"
 #include "Paddle.h"
 #include "Ball.h"
 #include <sstream>
@@ -14,19 +13,15 @@
 
 using namespace sf;
 // This is where our game starts from
-int scoreOne = 0;
-int scoreTwo = 0;
 
-void reset()
-{
-	scoreOne = 0;
-	scoreTwo = 0;
-	
-}
 int main()
 {
 	int windowWidth = 800;
 	int windowHeight = 600;
+
+	int scoreOne = 0;
+	int scoreTwo = 0;
+
 	std::chrono::steady_clock::time_point clockStart = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::time_point clockEnd = std::chrono::steady_clock::now();
 	float timeElapsed;
@@ -35,33 +30,34 @@ int main()
 	RenderWindow window(VideoMode(windowWidth, windowHeight), "Pong!");
 	window.setFramerateLimit(30);
 
-	//Needs a change
-
 	int paddleCheck = 0;
 	bool pause = false;
 	bool resetgame = false;
 	int aiMoveChoice = 0;
 	FloatRect lastBallPosition, currentBallPosition;
 	
+	// Load sound file
 	SoundBuffer buffer;
 	buffer.loadFromFile("Sounds/Bump.wav");
 	Sound bump(buffer);
 
+	// Load backgound
 	Texture texture;
 	texture.loadFromFile("Images/pong.png");
-	Sprite s(texture);
-
+	Sprite	 s(texture);
+	
 	// create a paddle
 	Paddle paddleOne(20.0f, windowHeight / 2.0f);
 
-	AIPaddle paddleTwo(windowWidth - 20.0f, windowHeight / 2.0f);
+	// Create AI paddle
+	AIPaddle paddleTwo(windowWidth-20.0f, windowHeight / 2.0f);
 	//Paddle paddleTwo(windowWidth - 20, windowHeight / 2);
 
 	// create a ball
 	Ball ball(windowWidth / 2.0f, windowHeight / 2.0f);
 	lastBallPosition = ball.getPosition();
 
-	// Create a "Text" object called "message"
+	// Create a HUD
 	Text hud;
 
 	//Font from dafont.com
@@ -83,7 +79,7 @@ int main()
 		// Handle Player Input
 
 		clockEnd = std::chrono::steady_clock::now();
-		timeElapsed = std::chrono::duration_cast<std::chrono::microseconds>(clockEnd - clockStart).count() / 1000000.0;
+		timeElapsed = std::chrono::duration_cast<std::chrono::microseconds>(clockEnd - clockStart).count() / 1000000.0f;
 		clockStart = clockEnd;
 		Event event;
 		while (window.pollEvent(event))
@@ -108,7 +104,7 @@ int main()
 			paddleOne.moveDown(timeElapsed);
 		}
 
-
+		// AI paddle movements
 		aiMoveChoice = paddleTwo.aiMove(ball.getPosition());
 		if (aiMoveChoice > 0)
 		{
@@ -125,12 +121,12 @@ int main()
 		//if (Keyboard::isKeyPressed(Keyboard::I))
 		//{
 		//    // move right paddle up
-		//    paddleTwo.moveUp();
+		//    paddleTwo.moveUp(timeElapsed);
 		//}
 		//else if (Keyboard::isKeyPressed(Keyboard::K))
 		//{
 		//    // move right paddle down
-		//    paddleTwo.moveDown();
+		//    paddleTwo.moveDown(timeElapsed);
 		//}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
@@ -150,108 +146,84 @@ int main()
 		{
 			if (Keyboard::isKeyPressed(Keyboard::Space))
 			{
-				resetgame = false;
-				reset();
+				scoreOne = 0;
+				scoreTwo = 0;
 				paddleOne.reset(20.0f, windowHeight / 2.0f);
 				paddleTwo.reset(windowWidth - 20.0f, windowHeight / 2.0f);
-				ball.reset(windowWidth / 2.0f, windowHeight + 20 / 2.0f); 
+				ball.reset(windowWidth / 2.0f, windowHeight / 2.0f); 
+				resetgame = false;
 
 			}
 		}
 		
 		// Update the frames
 
-		// Handle ball hitting the bottom
-		//Cange this function
-	   /* if (ball.getPosition().top > windowHeight)
-		{
-			// reverse the ball direction
-			ball.hitBottom();
-
-			// Remove a life
-			lives--;
-
-			// Check for zero lives
-			if (lives < 1) {
-				// reset the score
-				score = 0;
-				// reset the lives
-				lives = 3;
-			}
-
-		}*/
+		
 
 
 		if (ball.getPosition().left <= 0)
 		{
-			// reverse the ball direction
-			ball.hitOut();
-			if (paddleCheck == 1) scoreOne++;
-			if (paddleCheck == 2) scoreTwo++;
-
-
-
+			// reverse the ball direction and incease score
+			ball.hitOut(-1.0f);
+			scoreTwo++;
 		}
 
 		if (ball.getPositionRight() >= windowWidth)
 		{
-			// reverse the ball direction
-			ball.hitOut();
-			if (paddleCheck == 1) scoreOne++;
-			if (paddleCheck == 2) scoreTwo++;
-
-
-
+			// reverse the ball direction and increase score
+			ball.hitOut(1.0f);
+			scoreOne++;
 		}
 
 
 
-		// Handle ball hitting top
+		// Handle ball hitting top and bottom
 		if (ball.getPosition().top < 0 || ball.getPositionBottom()>windowHeight)
 		{
 			ball.reboundTopOrBottom(lastBallPosition, currentBallPosition);
 			bump.play();
-
-
 		}
 
-		// Has the ball hit the Paddle?
+		// Has the ball hit the left Paddle?
+
 		if (ball.getPosition().intersects(paddleOne.getPosition()))
 		{
-			// Hit detected so reverse the ball and score a point
-			ball.reboundPaddle(paddleOne.getPosition().top, paddleOne.getPosition().height,1);
-			paddleCheck = 1;
+					// Hit detected so reverse the ball and play sound
+			ball.reboundPaddleLeft(paddleOne.getPosition().top, paddleOne.getPosition().height);
 			bump.play();
 
 		}
+		
+		// Has the ball hit the rgight paddle?
 		if (ball.getPosition().intersects(paddleTwo.getPosition()))
 		{
-			// Hit detected so reverse the ball and score a point
-			ball.reboundPaddle(paddleTwo.getPosition().top, paddleTwo.getPosition().height, -1);
-			paddleCheck = 2;
+			// Hit detected so reverse the ball and play a sound
+			ball.reboundPaddleRight(paddleTwo.getPosition().top, paddleTwo.getPosition().height);
 			bump.play();
 		}
 
 		
 		if (!pause && !resetgame)
 		{
-			ball.update(timeElapsed);
+			
 			paddleOne.update(timeElapsed);
 			paddleTwo.update(timeElapsed);
+			ball.update(timeElapsed);
 		}
 
 		lastBallPosition = ball.getPosition();
 		// Update the HUD text
 		std::stringstream ss;
-		if(scoreOne<5&&scoreTwo<5) ss << "               " << scoreOne << "    " << scoreTwo;
+		if(scoreOne<5&&scoreTwo<5) ss << "                  " << scoreOne << "    " << scoreTwo;
+
 		if (scoreOne >= 5) {
 			resetgame = true;
-			ss << "Player one wins  press space";
+			ss << "  Player one wins \n space to reast";
 			
 		}
 		if (scoreTwo >= 5) {
 			resetgame = true;
-			ss << "Player two wins  press  space to restart";
+			ss << "   Player two wins  \n press space to restart";
 			
 		}
 
@@ -264,18 +236,13 @@ int main()
 		// Clear everything from the last frame
 		window.clear(Color(26, 128, 182, 255));
 		window.draw(s);
-
 		window.draw(paddleOne.getShape());
 		window.draw(paddleTwo.getShape());
 
 		window.draw(ball.getShape());
 
-		// Draw our score
+		// Draw our HUD
 		window.draw(hud);
-		if (scoreOne >= 5 || scoreTwo >= 5)
-		{
-
-		}
 
 		// Show everything we just drew
 		window.display();

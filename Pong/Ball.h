@@ -7,12 +7,10 @@ class Ball
 {
 private:
     Vector2f position;
-
-    // A RectangleShape object called ref
     RectangleShape ballShape;
 
-    float xVelocity = 300.0f;
-    float yVelocity = 20.0f;
+    float xVelocity = 100.0f;
+    float yVelocity = 0.0f;
     float width = 10.0f;
     float height = 10.0f;
    
@@ -24,15 +22,16 @@ public:
     float getPositionRight();
     float getPositionBottom();
 
-    RectangleShape getShape();//circle shape
+    RectangleShape getShape();
 
     float getXVelocity();
 
     void reboundTopOrBottom(FloatRect lastBallPosition, FloatRect currentBallPosition);
 
-    void reboundPaddle(float paddleY, float paddleHeight, int No);
+    void reboundPaddleLeft(float paddleY, float paddleHeight);
+    void reboundPaddleRight(float paddleY, float paddleHeight);
 
-    void hitOut();
+    void hitOut(float check);
 
     void update(float timeElapsed);
     void reset(float startX, float startY);

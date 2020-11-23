@@ -1,7 +1,5 @@
-//#include "stdafx.h"
 #include "Ball.h"
 
-// This the constructor and it is called when we create an object
 Ball::Ball(float startX, float startY)
 {
     position.x = startX;
@@ -40,27 +38,32 @@ void Ball::reboundTopOrBottom(FloatRect lastBallPosition, FloatRect currentBallP
     yVelocity = -yVelocity;
 }
 
-void Ball::reboundPaddle(float paddleY, float paddleHeight,int No)
+void Ball::reboundPaddleLeft(float paddleY, float paddleHeight)
 {
-   /* position.x -= (xVelocity * 30);
-    xVelocity = -xVelocity;*/
-
-    float paddleHit = (position.y - paddleY)/ (paddleHeight / 2.0f); // position on the paddle the ball hits
-
-    xVelocity = abs(xVelocity + xVelocity * (1.0f - abs(paddleHit)) * 0.1f - abs(xVelocity * paddleHit * -.2f));
-    yVelocity = yVelocity + abs(yVelocity) * paddleHit * .5f;
-    if (xVelocity > 300)
-        xVelocity = 300;
-    xVelocity = No * xVelocity;
+   position.x -= (xVelocity/30);
+   
+   float paddleHitPos = (position.y - paddleY) / (paddleHeight/2);
+   xVelocity = abs(xVelocity) + 50;
+    if (xVelocity > 500) xVelocity = 500;
+   yVelocity = -100* (1.0f-paddleHitPos );
+}
+void Ball::reboundPaddleRight(float paddleY, float paddleHeight)
+{
+    //position.x -= (xVelocity / 30);
     
+    float paddleHitPos = (position.y - paddleY) / (paddleHeight / 2);
+    xVelocity = abs(xVelocity) + 50;
+    if (xVelocity > 500) xVelocity = 500;
+    xVelocity = -xVelocity;
+    yVelocity = -100 * (1.0f-paddleHitPos);
 }
 
-void Ball::hitOut()
+void Ball::hitOut(float check)
 {
     position.y = 300;
     position.x = 400;
-    xVelocity = 300.0f;
-    yVelocity = 20.0f;
+    xVelocity = check*100.0f;
+    yVelocity = 0.0f;
 
 }
 
@@ -70,14 +73,14 @@ void Ball::update(float timeElapsed)
     position.y += yVelocity*timeElapsed;
     position.x += xVelocity*timeElapsed;
 
-    // Move the ball and the paddle
     ballShape.setPosition(position);
+
 }
 
 void Ball::reset(float startX, float startY)
 {
     position.x = startX;
     position.y = startY;
-    xVelocity = 300.0f;
-    yVelocity = 20.0f;
+    xVelocity = 100.0f;
+    yVelocity = 0.0f;
 }
