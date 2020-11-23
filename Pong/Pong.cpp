@@ -74,6 +74,7 @@ int main()
 	Sprite	 background;
 	background.setTexture(texture1);
 
+
 	Texture texture2;
 	if (!texture2.loadFromFile("Images/pong.png")); {
 		std::cout << "background 2 Image Error" << std::endl;
@@ -82,8 +83,8 @@ int main()
 	Paddle paddleOne(20.0f, windowHeight / 2.0f);
 
 	// Create AI paddle
-	AIPaddle paddleTwo(windowWidth - 30.0f, windowHeight / 2.0f);
-	//Paddle paddleTwo(windowWidth - 30, windowHeight / 2);
+	AIPaddle paddleTwo(windowWidth - 25.0f, windowHeight / 2.0f);
+	//Paddle paddleTwo(windowWidth - 25, windowHeight / 2);
 
 	// create a ball
 	Ball ball(windowWidth / 2.0f, windowHeight / 2.0f);
@@ -237,10 +238,11 @@ int main()
 					scoreOne = 0;
 					scoreTwo = 0;
 					paddleOne.reset(20.0f, windowHeight / 2.0f);
-					paddleTwo.reset(windowWidth - 20.0f, windowHeight / 2.0f);
+					paddleTwo.reset(windowWidth - 25.0f, windowHeight / 2.0f);
 					ball.reset(windowWidth / 2.0f, windowHeight / 2.0f);
 					hud.setPosition((windowWidth / 2.0f) - 40, 20);
-					background.setTexture(texture2);
+					background.setTexture(texture1);
+
 					resetGame = false;
 
 
@@ -282,6 +284,8 @@ int main()
 				// Hit detected so reverse the ball and play sound
 				ball.reboundPaddleLeft(paddleOne.getPosition().top, paddleOne.getPosition().height);
 				bump.play();
+
+			
 
 			}
 
