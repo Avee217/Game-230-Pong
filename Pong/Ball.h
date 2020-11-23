@@ -9,7 +9,7 @@ private:
     Vector2f position;
     CircleShape ballShape;
 
-    float xVelocity = 100.0f;
+    float xVelocity = -100.0f;
     float yVelocity = 0.0f;
     float width = 10.0f;
     float height = 10.0f;

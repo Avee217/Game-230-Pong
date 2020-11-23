@@ -67,19 +67,23 @@ int main()
 	
 
 	// Load backgound
-	Texture texture;
-	if (!texture.loadFromFile("Images/pong.png")); {
+	Texture texture1;
+	if (!texture1.loadFromFile("Images/pong1.png")); {
 		std::cout << "background Image Error" << std::endl;
 	}
-	Sprite	 background(texture);
-	//background.setTexture(texture);
+	Sprite	 background;
+	background.setTexture(texture1);
 
+	Texture texture2;
+	if (!texture2.loadFromFile("Images/pong.png")); {
+		std::cout << "background 2 Image Error" << std::endl;
+	}
 	// create a paddle
 	Paddle paddleOne(20.0f, windowHeight / 2.0f);
 
 	// Create AI paddle
-	AIPaddle paddleTwo(windowWidth - 20.0f, windowHeight / 2.0f);
-	//Paddle paddleTwo(windowWidth - 20, windowHeight / 2);
+	AIPaddle paddleTwo(windowWidth - 30.0f, windowHeight / 2.0f);
+	//Paddle paddleTwo(windowWidth - 30, windowHeight / 2);
 
 	// create a ball
 	Ball ball(windowWidth / 2.0f, windowHeight / 2.0f);
@@ -102,6 +106,9 @@ int main()
 
 	// Choose a color
 	hud.setFillColor(sf::Color::White);
+	hud.setPosition((windowWidth / 2.0f)-40, 20);
+
+
 	menuMusic.play();
 	backgroundMusic.play();
 	backgroundMusic.setVolume(0);
@@ -232,7 +239,10 @@ int main()
 					paddleOne.reset(20.0f, windowHeight / 2.0f);
 					paddleTwo.reset(windowWidth - 20.0f, windowHeight / 2.0f);
 					ball.reset(windowWidth / 2.0f, windowHeight / 2.0f);
+					hud.setPosition((windowWidth / 2.0f) - 40, 20);
+					background.setTexture(texture2);
 					resetGame = false;
+
 
 				}
 			}
@@ -295,17 +305,20 @@ int main()
 			lastBallPosition = ball.getPosition();
 			// Update the HUD text
 			std::stringstream ss;
-			if (scoreOne < 5 && scoreTwo < 5) ss << "                  " << scoreOne << "    " << scoreTwo;
+			if (scoreOne < 5 && scoreTwo < 5) ss <<scoreOne << "   " << scoreTwo;
 
 			if (scoreOne >= 5) {
 				resetGame = true;
 				ss << "  Player one wins \n space to reast";
+				hud.setPosition(windowWidth / 2 - 250, 20);
+				background.setTexture(texture2);
 
 			}
 			if (scoreTwo >= 5) {
 				resetGame = true;
 				ss << "   Player two wins  \n press space to restart";
-
+				hud.setPosition(windowWidth / 2 - 250, 20);
+				background.setTexture(texture2);
 			}
 
 
