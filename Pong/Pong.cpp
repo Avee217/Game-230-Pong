@@ -1,6 +1,7 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include <sstream>
+#include<iostream>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -38,13 +39,27 @@ int main()
 	
 	// Load sound file
 	SoundBuffer buffer;
-	buffer.loadFromFile("Sounds/Bump.wav");
+	if (!buffer.loadFromFile("Sounds/Bump.wav")) {
+		std::cout << "Sound Error" << std::endl;
+	}
 	Sound bump(buffer);
+	bump.setVolume(50);
+
+	// background music
+	Music backgroundMusic;
+	if (!backgroundMusic.openFromFile("Music/Sci-fi Pulse Loop.wav")) {
+		std::cout << "Music Error"<<std::endl;
+	}
+	backgroundMusic.setVolume(25);
+	backgroundMusic.play();
 
 	// Load backgound
 	Texture texture;
-	texture.loadFromFile("Images/pong.png");
-	Sprite	 s(texture);
+	if (!texture.loadFromFile("Images/pong.png")); {
+		std::cout << "background Image Error" << std::endl;
+	}
+	Sprite	 background;
+	background.setTexture(texture);
 	
 	// create a paddle
 	Paddle paddleOne(20.0f, windowHeight / 2.0f);
@@ -62,13 +77,15 @@ int main()
 
 	//Font from dafont.com
 	Font font;
-	font.loadFromFile("Font/DS-DIGIT.ttf");
+	if (!font.loadFromFile("Font/DS-DIGIT.ttf")) {
+		std::cout << "Font Error" << std::endl;
+	}
 
 	// Set the font to our message
 	hud.setFont(font);
 
 	// Make it really big
-	hud.setCharacterSize(75);
+	hud.setCharacterSize(50);
 
 	// Choose a color
 	hud.setFillColor(sf::Color::White);
@@ -235,7 +252,7 @@ int main()
 		//Draw the Frame
 		// Clear everything from the last frame
 		window.clear(Color(26, 128, 182, 255));
-		window.draw(s);
+		window.draw(background);
 		window.draw(paddleOne.getShape());
 		window.draw(paddleTwo.getShape());
 

@@ -6,7 +6,7 @@ Ball::Ball(float startX, float startY)
     position.y = startY;
     
 
-    ballShape.setSize(sf::Vector2f(width, height));
+    ballShape.setRadius(5);
     ballShape.setPosition(position);
 }
 
@@ -23,7 +23,7 @@ float Ball::getPositionBottom()
     return ballShape.getGlobalBounds().top + height;
 }
 
-RectangleShape Ball::getShape()
+CircleShape Ball::getShape()
 {
     return ballShape;
 }

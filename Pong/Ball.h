@@ -7,7 +7,7 @@ class Ball
 {
 private:
     Vector2f position;
-    RectangleShape ballShape;
+    CircleShape ballShape;
 
     float xVelocity = 100.0f;
     float yVelocity = 0.0f;
@@ -22,7 +22,7 @@ public:
     float getPositionRight();
     float getPositionBottom();
 
-    RectangleShape getShape();
+    CircleShape getShape();
 
     float getXVelocity();
 
