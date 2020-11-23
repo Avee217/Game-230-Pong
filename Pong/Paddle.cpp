@@ -54,7 +54,7 @@ void Paddle::reset(float startX, float startY)
 
 AIPaddle::AIPaddle(float startX, float startY):Paddle(startX, startY)
 {
-    setSpeed(200.0f);
+    setSpeed(100.0f);
 }
 
 int AIPaddle::aiMove(FloatRect ballPosition) {

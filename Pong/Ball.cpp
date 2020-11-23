@@ -44,7 +44,7 @@ void Ball::reboundPaddleLeft(float paddleY, float paddleHeight)
    
    float paddleHitPos = (position.y - paddleY) / (paddleHeight/2);
    xVelocity = abs(xVelocity) + 50;
-    if (xVelocity > 500) xVelocity = 500;
+    if (xVelocity > 400) xVelocity = 400;
    yVelocity = -100* (1.0f-paddleHitPos );
 }
 void Ball::reboundPaddleRight(float paddleY, float paddleHeight)
@@ -53,7 +53,7 @@ void Ball::reboundPaddleRight(float paddleY, float paddleHeight)
     
     float paddleHitPos = (position.y - paddleY) / (paddleHeight / 2);
     xVelocity = abs(xVelocity) + 50;
-    if (xVelocity > 500) xVelocity = 500;
+    if (xVelocity > 400) xVelocity = 400;
     xVelocity = -xVelocity;
     yVelocity = -100 * (1.0f-paddleHitPos);
 }
