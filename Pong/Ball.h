@@ -26,7 +26,7 @@ public:
 
     float getXVelocity();
 
-    void reboundTopOrBottom(FloatRect lastBallPosition, FloatRect currentBallPosition);
+    void reboundTopOrBottom();
 
     void reboundPaddleLeft(float paddleY, float paddleHeight);
     void reboundPaddleRight(float paddleY, float paddleHeight);

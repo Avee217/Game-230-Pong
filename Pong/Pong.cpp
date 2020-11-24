@@ -16,10 +16,6 @@
 using namespace sf;
 // This is where our game starts from
 
-int playerCount = 1;
-
-
-
 int main()
 {
 	int windowWidth = 800;
@@ -27,14 +23,11 @@ int main()
 
 	int scoreOne = 0;
 	int scoreTwo = 0;
-
-	playerCount = 1;
+	int playerCount = 1;
 
 	std::chrono::steady_clock::time_point clockStart = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::time_point clockEnd = std::chrono::steady_clock::now();
 	float timeElapsed;
-
-
 
 	// Make a window that is 800 by 600 pixels
 	// And has the title "Pong!"
@@ -49,7 +42,6 @@ int main()
 	bool resetGame = false;
 	bool vm = false;
 	int aiMoveChoice = 0;
-	FloatRect lastBallPosition, currentBallPosition;
 
 	// Load sound file 
 	//Sounds from freesound.org
@@ -87,7 +79,6 @@ int main()
 	}
 	victoryMusic.setVolume(25);
 	
-
 	// Load backgound
 	Texture texture1;
 	if (!texture1.loadFromFile("Images/pong1.png")) {
@@ -96,12 +87,12 @@ int main()
 	Sprite	 background,menuBackGround;
 	background.setTexture(texture1);
 
-
 	Texture texture2;
 	if (!texture2.loadFromFile("Images/pong.png")) {
 		std::cout << "background 2 Image Error" << std::endl;
 	}
 	menuBackGround.setTexture(texture2);
+
 	// create a paddle
 	Paddle paddleOne(20.0f, windowHeight / 2.0f); 
 	Paddle paddleTwo(windowWidth - 25.0f, windowHeight / 2.0f);
@@ -110,7 +101,6 @@ int main()
 
 	// create a ball
 	Ball ball(windowWidth / 2.0f, windowHeight / 2.0f);
-	lastBallPosition = ball.getPosition();
 
 	// Create a HUD
 	Text hud;
@@ -120,32 +110,27 @@ int main()
 	if (!font.loadFromFile("Font/DS-DIGIT.ttf")) {
 		std::cout << "Font Error" << std::endl;
 	}
-
 	// Set the font to our message
 	hud.setFont(font);
-
 	// Make it really big
 	hud.setCharacterSize(50);
-
 	// Choose a color
 	hud.setFillColor(sf::Color::White);
 	hud.setPosition((windowWidth / 2.0f)-40, 20);
 
-
 	menuMusic.play();
 	// This "while" loop goes round and round- perhaps forever
 	while (window.isOpen())
-	{
+	{	
 		// Handle Player Input
-		
 		clockEnd = std::chrono::steady_clock::now();
 		timeElapsed = std::chrono::duration_cast<std::chrono::microseconds>(clockEnd - clockStart).count() / 1000000.0f;
 		clockStart = clockEnd;
 		Event event;
 		while (window.pollEvent(event))
 		{
-			if (!gameRunning) {
-				
+			if (!gameRunning) 
+			{
 				switch (event.type)
 				{
 				case Event::KeyReleased:
@@ -170,6 +155,7 @@ int main()
 							backgroundMusic.play();
 							backgroundMusic.setVolume(50);
 							break;
+
 						case 1:
 							std::cout << "Two-Player button has been pressed" << std::endl;
 							playerCount = 2;
@@ -177,8 +163,8 @@ int main()
 							menuMusic.stop();
 							backgroundMusic.play();
 							backgroundMusic.setVolume(50);
-							
 							break;
+
 						case 2:
 							std::cout << "Four-Player button has been pressed" << std::endl;
 							playerCount = 4;
@@ -196,43 +182,33 @@ int main()
 							backgroundMusic.play();
 							backgroundMusic.setVolume(50);
 							break;
+
 						case 3:
 							window.close();
 							break;
 						}
-
 						break;
 					}
-
 					break;
+
 				case Event::Closed:
 					window.close();
-
 					break;
-
 				}
-
 			}
 		}
 
 		if (gameRunning)
 		{
-
-
 			if (event.type == Event::Closed) window.close();
 
-			currentBallPosition = ball.getPosition();
-
+			// Moving Paddle One
 			if (Keyboard::isKeyPressed(Keyboard::W))
-			{
-				// move left paddle up
+			{	
 				paddleOne.moveUp(timeElapsed,0.0f);
 			}
-
-
 			else if (Keyboard::isKeyPressed(Keyboard::S))
 			{
-				// move left paddle down
 				if (playerCount == 4)
 				{
 					paddleOne.moveDown(timeElapsed, 300.0f);
@@ -256,20 +232,19 @@ int main()
 				{
 					paddleTwo.moveUp(timeElapsed,0.0f);
 				}
-
+				
 				aiMoveChoice = 0;
 			}
+
+			//Moving Paddle Two
 			if (playerCount == 2 || playerCount==4)
 			{
-			
 				if (Keyboard::isKeyPressed(Keyboard::I))
 				{
-					// move right paddle up
 					paddleTwo.moveUp(timeElapsed,0.0f);
 				}
 				else if (Keyboard::isKeyPressed(Keyboard::K))
 				{
-					// move right paddle down
 					if (playerCount == 4)
 					{
 						paddleTwo.moveDown(timeElapsed, 300.0f);
@@ -280,30 +255,32 @@ int main()
 					}
 				}
 			}
+
 			if (playerCount == 4)
 			{
+				//Moving Paddle A
 				if (Keyboard::isKeyPressed(Keyboard::R))
-				{
-					// move right paddle up
+				{					
 					paddleA.moveUp(timeElapsed,325.0f);
 				}
 				else if (Keyboard::isKeyPressed(Keyboard::F))
-				{
-					// move right paddle down
+				{					
 					paddleA.moveDown(timeElapsed,0.0f);
 				}
+
+				//Moving Paddle B
 				if (Keyboard::isKeyPressed(Keyboard::Y))
-				{
-					// move right paddle up
+				{					
 					paddleB.moveUp(timeElapsed, 325.0f);
 				}
 				else if (Keyboard::isKeyPressed(Keyboard::H))
-				{
-					// move right paddle down
+				{					
 					paddleB.moveDown(timeElapsed, 0.0f);
 				}
 
 			}
+
+			//Exiting the game 
 			if (Keyboard::isKeyPressed(Keyboard::Escape))
 			{
 				// quit...
@@ -311,7 +288,7 @@ int main()
 				window.close();
 			}
 
-
+			//Pausing
 			if (Keyboard::isKeyPressed(Keyboard::P))
 			{
 				pause = !pause;
@@ -319,6 +296,7 @@ int main()
 
 			if (resetGame)
 			{
+				//Restart current game
 				if (Keyboard::isKeyPressed(Keyboard::Space))
 				{
 					scoreOne = 0;
@@ -337,18 +315,26 @@ int main()
 					ball.reset(windowWidth / 2.0f, windowHeight / 2.0f);
 					hud.setPosition((windowWidth / 2.0f) - 40, 20);
 					background.setColor(sf::Color(255, 255, 255, 255));
-					backgroundMusic.play();
-
-					
-
+					backgroundMusic.play();	
 				}
+
+				//Back to Main menu
+				if (Keyboard::isKeyPressed(Keyboard::Q))
+				{
+					scoreOne = 0;
+					scoreTwo = 0;
+					victoryMusic.stop();
+					gameRunning = false;
+					resetGame = false;
+					vm = false;
+					hud.setPosition((windowWidth / 2.0f) - 40, 20);
+					background.setColor(sf::Color(255, 255, 255, 255));
+					menuMusic.play();
+				}
+				
 			}
 
-			// Update the frames
-
-
-
-
+			// Collisions
 			if (ball.getPosition().left <= 0)
 			{
 				// reverse the ball direction and incease score
@@ -364,29 +350,23 @@ int main()
 				score.play();
 				scoreOne++;
 			}
-
-
-
 			// Handle ball hitting top and bottom
 			if (ball.getPosition().top < 0 || ball.getPositionBottom()>windowHeight)
 			{
-				ball.reboundTopOrBottom(lastBallPosition, currentBallPosition);
+				ball.reboundTopOrBottom();
 				bump.play();
 			}
 
-			// Has the ball hit the left Paddle?
-
+			// Has the ball hit the left Paddle One?
 			if (ball.getPosition().intersects(paddleOne.getPosition()))
 			{
 				// Hit detected so reverse the ball and play sound
 				ball.reboundPaddleLeft(paddleOne.getPosition().top, paddleOne.getPosition().height);
 				bump.play();
-
-			
-
+				
 			}
 
-			// Has the ball hit the rgight paddle?
+			// Has the ball hit the rgight paddle Two?
 			if (ball.getPosition().intersects(paddleTwo.getPosition()))
 			{
 				// Hit detected so reverse the ball and play a sound
@@ -396,13 +376,15 @@ int main()
 
 			if (playerCount == 4) 
 			{
+				// Has the ball hit the left Paddle A?
 				if (ball.getPosition().intersects(paddleA.getPosition()))
 				{
 					// Hit detected so reverse the ball and play a sound
 					ball.reboundPaddleLeft(paddleA.getPosition().top, paddleA.getPosition().height);
-					bump.play();
+					bump.play();	
 				}
 
+				// Has the ball hit the left Paddle B?
 				if (ball.getPosition().intersects(paddleB.getPosition()))
 				{
 					// Hit detected so reverse the ball and play a sound
@@ -411,8 +393,7 @@ int main()
 				}
 
 			}
-
-
+			
 			if (!pause && !resetGame)
 			{
 
@@ -426,14 +407,13 @@ int main()
 				ball.update(timeElapsed);
 			}
 
-			lastBallPosition = ball.getPosition();
 			// Update the HUD text
 			std::stringstream ss;
 			if (scoreOne < 5 && scoreTwo < 5) ss <<scoreOne << "   " << scoreTwo;
 
 			if (scoreOne >= 5) {
 				resetGame = true;
-				ss << "Left side wins \n space to reast";
+				ss << "Left side wins\nspace to reast\nQ to return to Menu";
 				hud.setPosition(windowWidth / 2 - 250, windowHeight/2);
 				backgroundMusic.stop();
 				if (!vm) 
@@ -445,9 +425,10 @@ int main()
 				background.setColor(sf::Color(255,0,0,255));
 
 			}
+
 			if (scoreTwo >= 5) {
 				resetGame = true;
-				ss << "Right Side wins  \n press space to restart";
+				ss << "Right Side wins\npress space to restart\nQ to return to Menu";
 				hud.setPosition(windowWidth / 2 - 250, windowHeight/2);
 				backgroundMusic.stop();
 				if(!vm)
@@ -459,10 +440,7 @@ int main()
 				background.setColor(sf::Color(0,0,255,255));
 			}
 
-
 			hud.setString(ss.str());
-
-
 
 			//Draw the Frame
 			// Clear everything from the last frame
@@ -475,8 +453,7 @@ int main()
 					window.draw(paddleOne.getShape());
 					window.draw(paddleTwo.getShape());
 				}
-				//if (playerCount == 1) window.draw(paddleAI.getShape());
-				//if (playerCount == 2) window.draw(paddleTwo.getShape());
+				
 				if (playerCount == 4)
 				{
 					window.draw(paddleOne.getShape());
@@ -488,10 +465,10 @@ int main()
 				window.draw(ball.getShape());
 			}
 
-			// Draw our HUD
+			// Draw the HUD
 			window.draw(hud);
 
-			// Show everything we just drew
+			// Show everything drewn
 			window.display();
 		}
 		if (!gameRunning)

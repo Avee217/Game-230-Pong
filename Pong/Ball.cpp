@@ -33,7 +33,7 @@ float Ball::getXVelocity()
     return xVelocity;
 }
 
-void Ball::reboundTopOrBottom(FloatRect lastBallPosition, FloatRect currentBallPosition )
+void Ball::reboundTopOrBottom( )
 {
     yVelocity = -yVelocity;
 }
