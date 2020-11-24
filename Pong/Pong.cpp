@@ -147,7 +147,7 @@ int main()
 					case Keyboard::Return:
 						switch (menu.GetPressedItem())
 						{
-						case 0:
+						case 1:
 							std::cout << "Single player has been pressed" << std::endl;
 							playerCount = 1;
 							gameRunning = true;
@@ -156,7 +156,7 @@ int main()
 							backgroundMusic.setVolume(50);
 							break;
 
-						case 1:
+						case 2:
 							std::cout << "Two-Player button has been pressed" << std::endl;
 							playerCount = 2;
 							gameRunning = true;
@@ -165,7 +165,7 @@ int main()
 							backgroundMusic.setVolume(50);
 							break;
 
-						case 2:
+						case 3:
 							std::cout << "Four-Player button has been pressed" << std::endl;
 							playerCount = 4;
 							if (playerCount == 4)
@@ -183,7 +183,7 @@ int main()
 							backgroundMusic.setVolume(50);
 							break;
 
-						case 3:
+						case 4:
 							window.close();
 							break;
 						}
