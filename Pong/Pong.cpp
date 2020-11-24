@@ -371,17 +371,17 @@ int main()
 				scoreOne++;
 			}
 			// Handle ball hitting top and bottom
-			if (ball.getPosition().top < 0 || ball.getPositionBottom()>windowHeight)
+			if (ball.getPosition().top <= 0 || ball.getPositionBottom()>=windowHeight)
 			{
 				ball.reboundTopOrBottom();
 				bump.play();
 			}
-			if (obstacle.getPosition().top < 0 || obstacle.getPositionBottom()>windowHeight)
+			if (obstacle.getPosition().top <= 0 || obstacle.getPositionBottom()>=windowHeight)
 			{
 				obstacle.reboundTopOrBottom();
 				bump.play();
 			}
-			if (obstacle2.getPosition().top < 0 || obstacle2.getPositionBottom()>windowHeight)
+			if (obstacle2.getPosition().top <= 0 || obstacle2.getPositionBottom()>=windowHeight)
 			{
 				obstacle2.reboundTopOrBottom();
 				bump.play();
