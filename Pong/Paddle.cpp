@@ -18,6 +18,20 @@ void Paddle::setSpeed(float speed)
     paddleSpeed = speed;
 }
 
+void Paddle::changePosition(float newX, float newY)
+{
+    position.x = newX;
+    position.y = newY;
+    paddleShape.setPosition(position);
+}
+
+void Paddle::changeSize(float width, float height) 
+{
+    paddleWidth = width;
+    paddleHeight = height;
+    paddleShape.setSize(sf::Vector2f(paddleWidth, paddleHeight));
+}
+
 FloatRect Paddle::getPosition()
 {
     return paddleShape.getGlobalBounds();
@@ -28,16 +42,16 @@ RectangleShape Paddle::getShape()
     return paddleShape;
 }
 
-void Paddle::moveUp(float timeElapsed)
+void Paddle::moveUp(float timeElapsed, float limitChange)
 {
-    if (position.y >= (0))
+    if (position.y >= (0+limitChange))
         position.y -= paddleSpeed * timeElapsed;
     
 }
 
-void Paddle::moveDown(float timeElapsed)
+void Paddle::moveDown(float timeElapsed, float limitChange)
 {
-    if (position.y <= (600-paddleHeight))
+    if (position.y <= (600-paddleHeight-limitChange))
     position.y += paddleSpeed * timeElapsed;
 }
 
@@ -52,13 +66,9 @@ void Paddle::reset(float startX, float startY)
     position.y = startY - paddleHeight / 2.0f;
 }
 
-AIPaddle::AIPaddle(float startX, float startY):Paddle(startX, startY)
-{
-    setSpeed(100.0f);
-}
 
-int AIPaddle::aiMove(FloatRect ballPosition) {
-    if (ballPosition.top> getPosition().top + paddleHeight)
+int Paddle::aiMove(FloatRect ballPosition) {
+    if (ballPosition.top > getPosition().top + paddleHeight)
     {
         return 1;
     }

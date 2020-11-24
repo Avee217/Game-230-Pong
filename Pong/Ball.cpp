@@ -81,6 +81,9 @@ void Ball::reset(float startX, float startY)
 {
     position.x = startX;
     position.y = startY;
-    xVelocity = 100.0f;
+    if (xVelocity < 0)
+        xVelocity = -100.0f;
+    else
+        xVelocity = 100.0f;
     yVelocity = 0.0f;
 }

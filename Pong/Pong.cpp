@@ -16,6 +16,10 @@
 using namespace sf;
 // This is where our game starts from
 
+int playerCount = 1;
+
+
+
 int main()
 {
 	int windowWidth = 800;
@@ -23,6 +27,8 @@ int main()
 
 	int scoreOne = 0;
 	int scoreTwo = 0;
+
+	playerCount = 1;
 
 	std::chrono::steady_clock::time_point clockStart = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::time_point clockEnd = std::chrono::steady_clock::now();
@@ -36,55 +42,71 @@ int main()
 	window.setFramerateLimit(30);// set FPS limit
 
 	Menu menu(windowWidth,windowHeight);
-	//int paddleCheck = 0;
-
+	
 	//bool for game states
 	bool gameRunning = false;
 	bool pause = false;
 	bool resetGame = false;
+	bool vm = false;
 	int aiMoveChoice = 0;
 	FloatRect lastBallPosition, currentBallPosition;
 
-	// Load sound file
-	SoundBuffer buffer;
-	if (!buffer.loadFromFile("Sounds/Bump.wav")) {
-		std::cout << "Sound Error" << std::endl;
+	// Load sound file 
+	//Sounds from freesound.org
+	SoundBuffer bumpBuffer;
+	if (!bumpBuffer.loadFromFile("Sounds/Bump.wav")) {
+		std::cout << "Bump Sound Error" << std::endl;
 	}
-	Sound bump(buffer);
+	Sound bump(bumpBuffer);
 	bump.setVolume(50);
+	
+	SoundBuffer scoreBuffer;
+	if (!scoreBuffer.loadFromFile("Sounds/Score.wav")) {
+		std::cout << "Score Sound Error" << std::endl;
+	}
+	Sound score(scoreBuffer);
+	score.setVolume(50);
 
-	// background music
+	// Music
 	Music backgroundMusic;
 	if (!backgroundMusic.openFromFile("Music/BackgroundMusic.wav")) {
-		std::cout << "Music Error" << std::endl;
+		std::cout << "Background Music Error" << std::endl;
 	}
 	backgroundMusic.setVolume(25);
+
+	
 	Music menuMusic;
 	if (!menuMusic.openFromFile("Music/MenuMusic.wav")) {
-		std::cout << "Music Error" << std::endl;
+		std::cout << "Menu Music Error" << std::endl;
 	}
 	menuMusic.setVolume(25);
+
+	Music victoryMusic;
+	if (!victoryMusic.openFromFile("Music/VictoryMusic.wav")) {
+		std::cout << "Menu Music Error" << std::endl;
+	}
+	victoryMusic.setVolume(25);
 	
 
 	// Load backgound
 	Texture texture1;
-	if (!texture1.loadFromFile("Images/pong1.png")); {
+	if (!texture1.loadFromFile("Images/pong1.png")) {
 		std::cout << "background Image Error" << std::endl;
 	}
-	Sprite	 background;
+	Sprite	 background,menuBackGround;
 	background.setTexture(texture1);
 
 
 	Texture texture2;
-	if (!texture2.loadFromFile("Images/pong.png")); {
+	if (!texture2.loadFromFile("Images/pong.png")) {
 		std::cout << "background 2 Image Error" << std::endl;
 	}
+	menuBackGround.setTexture(texture2);
 	// create a paddle
-	Paddle paddleOne(20.0f, windowHeight / 2.0f);
-
-	// Create AI paddle
-	AIPaddle paddleTwo(windowWidth - 25.0f, windowHeight / 2.0f);
-	//Paddle paddleTwo(windowWidth - 25, windowHeight / 2);
+	Paddle paddleOne(20.0f, windowHeight / 2.0f); 
+	Paddle paddleTwo(windowWidth - 25.0f, windowHeight / 2.0f);
+	Paddle paddleA(20.0f, windowHeight / 1.25f);
+	Paddle paddleB(windowWidth - 25.0f, windowHeight / 1.25f);
 
 	// create a ball
 	Ball ball(windowWidth / 2.0f, windowHeight / 2.0f);
@@ -111,9 +133,6 @@ int main()
 
 
 	menuMusic.play();
-	backgroundMusic.play();
-	backgroundMusic.setVolume(0);
-
 	// This "while" loop goes round and round- perhaps forever
 	while (window.isOpen())
 	{
@@ -144,16 +163,40 @@ int main()
 						switch (menu.GetPressedItem())
 						{
 						case 0:
-							std::cout << "Play button has been pressed" << std::endl;
+							std::cout << "Single player has been pressed" << std::endl;
+							playerCount = 1;
 							gameRunning = true;
 							menuMusic.stop();
 							backgroundMusic.play();
 							backgroundMusic.setVolume(50);
 							break;
 						case 1:
-							std::cout << "Option button has been pressed" << std::endl;
+							std::cout << "Two-Player button has been pressed" << std::endl;
+							playerCount = 2;
+							gameRunning = true;
+							menuMusic.stop();
+							backgroundMusic.play();
+							backgroundMusic.setVolume(50);
+							
 							break;
 						case 2:
+							std::cout << "Four-Player button has been pressed" << std::endl;
+							playerCount = 4;
+							if (playerCount == 4)
+							{
+								paddleOne.changePosition(20.0f, windowHeight / 4.0f);
+								paddleOne.changeSize(5, 50);
+								paddleTwo.changePosition(windowWidth - 25.0f, windowHeight / 4.0f);
+								paddleTwo.changeSize(5, 50);
+								paddleA.changeSize(5, 50);
+								paddleB.changeSize(5, 50);
+							}
+							gameRunning = true;
+							menuMusic.stop();
+							backgroundMusic.play();
+							backgroundMusic.setVolume(50);
+							break;
+						case 3:
 							window.close();
 							break;
 						}
@@ -172,52 +215,95 @@ int main()
 			}
 		}
 
-		if (gameRunning) 
+		if (gameRunning)
 		{
-			
-			
+
+
 			if (event.type == Event::Closed) window.close();
-			
+
 			currentBallPosition = ball.getPosition();
 
 			if (Keyboard::isKeyPressed(Keyboard::W))
 			{
 				// move left paddle up
-				paddleOne.moveUp(timeElapsed);
+				paddleOne.moveUp(timeElapsed,0.0f);
 			}
 
 
 			else if (Keyboard::isKeyPressed(Keyboard::S))
 			{
 				// move left paddle down
-				paddleOne.moveDown(timeElapsed);
+				if (playerCount == 4)
+				{
+					paddleOne.moveDown(timeElapsed, 300.0f);
+				}
+				else
+				{
+					paddleOne.moveDown(timeElapsed, 0.0f);
+				}
 			}
 
 			// AI paddle movements
-			aiMoveChoice = paddleTwo.aiMove(ball.getPosition());
-			if (aiMoveChoice > 0)
+			if (playerCount == 1) 
 			{
-				paddleTwo.moveDown(timeElapsed);
+				aiMoveChoice = paddleTwo.aiMove(ball.getPosition());
+				if (aiMoveChoice > 0)
+				{
+					paddleTwo.moveDown(timeElapsed,0.0f);
+
+				}
+				if (aiMoveChoice < 0)
+				{
+					paddleTwo.moveUp(timeElapsed,0.0f);
+				}
+
+				aiMoveChoice = 0;
+			}
+			if (playerCount == 2 || playerCount==4)
+			{
+			
+				if (Keyboard::isKeyPressed(Keyboard::I))
+				{
+					// move right paddle up
+					paddleTwo.moveUp(timeElapsed,0.0f);
+				}
+				else if (Keyboard::isKeyPressed(Keyboard::K))
+				{
+					// move right paddle down
+					if (playerCount == 4)
+					{
+						paddleTwo.moveDown(timeElapsed, 300.0f);
+					}
+					else
+					{
+						paddleTwo.moveDown(timeElapsed, 0.0f);
+					}
+				}
+			}
+			if (playerCount == 4)
+			{
+				if (Keyboard::isKeyPressed(Keyboard::R))
+				{
+					// move right paddle up
+					paddleA.moveUp(timeElapsed,325.0f);
+				}
+				else if (Keyboard::isKeyPressed(Keyboard::F))
+				{
+					// move right paddle down
+					paddleA.moveDown(timeElapsed,0.0f);
+				}
+				if (Keyboard::isKeyPressed(Keyboard::Y))
+				{
+					// move right paddle up
+					paddleB.moveUp(timeElapsed, 325.0f);
+				}
+				else if (Keyboard::isKeyPressed(Keyboard::H))
+				{
+					// move right paddle down
+					paddleB.moveDown(timeElapsed, 0.0f);
+				}
 
 			}
-			if (aiMoveChoice < 0)
-			{
-				paddleTwo.moveUp(timeElapsed);
-			}
-
-			aiMoveChoice = 0;
-
-			//if (Keyboard::isKeyPressed(Keyboard::I))
-			//{
-			//    // move right paddle up
-			//    paddleTwo.moveUp(timeElapsed);
-			//}
-			//else if (Keyboard::isKeyPressed(Keyboard::K))
-			//{
-			//    // move right paddle down
-			//    paddleTwo.moveDown(timeElapsed);
-			//}
-
 			if (Keyboard::isKeyPressed(Keyboard::Escape))
 			{
 				// quit...
@@ -237,14 +323,23 @@ int main()
 				{
 					scoreOne = 0;
 					scoreTwo = 0;
+					resetGame = false;
+					vm = false;
+					victoryMusic.stop();
 					paddleOne.reset(20.0f, windowHeight / 2.0f);
 					paddleTwo.reset(windowWidth - 25.0f, windowHeight / 2.0f);
+					if (playerCount == 4) {
+						paddleOne.reset(20.0f, windowHeight / 4.0f);
+						paddleTwo.reset(windowWidth - 25.0f, windowHeight / 4.0f);
+						Paddle paddleA(20.0f, windowHeight / 1.5f);
+						Paddle paddleB(windowWidth - 25.0f, windowHeight / 1.5f);
+					}
 					ball.reset(windowWidth / 2.0f, windowHeight / 2.0f);
 					hud.setPosition((windowWidth / 2.0f) - 40, 20);
-					background.setTexture(texture1);
+					background.setColor(sf::Color(255, 255, 255, 255));
+					backgroundMusic.play();
 
-					resetGame = false;
-
+					
 
 				}
 			}
@@ -258,6 +353,7 @@ int main()
 			{
 				// reverse the ball direction and incease score
 				ball.hitOut(-1.0f);
+				score.play();
 				scoreTwo++;
 			}
 
@@ -265,6 +361,7 @@ int main()
 			{
 				// reverse the ball direction and increase score
 				ball.hitOut(1.0f);
+				score.play();
 				scoreOne++;
 			}
 
@@ -297,12 +394,35 @@ int main()
 				bump.play();
 			}
 
+			if (playerCount == 4) 
+			{
+				if (ball.getPosition().intersects(paddleA.getPosition()))
+				{
+					// Hit detected so reverse the ball and play a sound
+					ball.reboundPaddleLeft(paddleA.getPosition().top, paddleA.getPosition().height);
+					bump.play();
+				}
+
+				if (ball.getPosition().intersects(paddleB.getPosition()))
+				{
+					// Hit detected so reverse the ball and play a sound
+					ball.reboundPaddleRight(paddleB.getPosition().top, paddleB.getPosition().height);
+					bump.play();
+				}
+
+			}
+
 
 			if (!pause && !resetGame)
 			{
 
 				paddleOne.update(timeElapsed);
 				paddleTwo.update(timeElapsed);
+				if (playerCount == 4)
+				{
+					paddleA.update(timeElapsed);
+					paddleB.update(timeElapsed);
+				}
 				ball.update(timeElapsed);
 			}
 
@@ -313,16 +433,30 @@ int main()
 
 			if (scoreOne >= 5) {
 				resetGame = true;
-				ss << "  Player one wins \n space to reast";
-				hud.setPosition(windowWidth / 2 - 250, 20);
-				background.setTexture(texture2);
+				ss << "Left side wins \n space to reast";
+				hud.setPosition(windowWidth / 2 - 250, windowHeight/2);
+				backgroundMusic.stop();
+				if (!vm) 
+				{
+					victoryMusic.play();
+					victoryMusic.setVolume(50);
+				}
+				vm = true;
+				background.setColor(sf::Color(255,0,0,255));
 
 			}
 			if (scoreTwo >= 5) {
 				resetGame = true;
-				ss << "   Player two wins  \n press space to restart";
-				hud.setPosition(windowWidth / 2 - 250, 20);
-				background.setTexture(texture2);
+				ss << "Right Side wins  \n press space to restart";
+				hud.setPosition(windowWidth / 2 - 250, windowHeight/2);
+				backgroundMusic.stop();
+				if(!vm)
+				{
+					victoryMusic.play();
+					victoryMusic.setVolume(50);
+				}
+				vm = true;
+				background.setColor(sf::Color(0,0,255,255));
 			}
 
 
@@ -334,10 +468,25 @@ int main()
 			// Clear everything from the last frame
 			window.clear(Color(26, 128, 182, 255));
 			window.draw(background);
-			window.draw(paddleOne.getShape());
-			window.draw(paddleTwo.getShape());
+			if (!resetGame)
+			{
+				if (playerCount == 1 || playerCount == 2)
+				{
+					window.draw(paddleOne.getShape());
+					window.draw(paddleTwo.getShape());
+				}
+				//if (playerCount == 1) window.draw(paddleAI.getShape());
+				//if (playerCount == 2) window.draw(paddleTwo.getShape());
+				if (playerCount == 4)
+				{
+					window.draw(paddleOne.getShape());
+					window.draw(paddleTwo.getShape());
+					window.draw(paddleA.getShape());
+					window.draw(paddleB.getShape());
+				}
 
-			window.draw(ball.getShape());
+				window.draw(ball.getShape());
+			}
 
 			// Draw our HUD
 			window.draw(hud);
@@ -349,6 +498,7 @@ int main()
 		{
 
 			window.clear();
+			window.draw(menuBackGround);
 
 			menu.draw(window);
 

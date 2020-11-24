@@ -19,27 +19,20 @@ public:
     void setSpeed(float speed);
 
     FloatRect getPosition();
+    void changePosition(float newX, float newY);
+    void changeSize(float width, float height);
 
     RectangleShape getShape();
 
-    void moveUp(float timeElapsed);
+    void moveUp(float timeElapsed,float limitChange);
 
-    void moveDown(float timeElapsed);
+    void moveDown(float timeElapsed,float limitChange);
 
     void update(float timeElapsed);
     void reset(float startX, float startY);
+    int aiMove(FloatRect ballPosition);
 
 };
 
-class AIPaddle : public Paddle
-
-{
-public:
-    AIPaddle(float startX, float startY);
-
-    int aiMove(FloatRect ballPosition );
-
-
-};
 
 

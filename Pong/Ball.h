@@ -35,5 +35,5 @@ public:
 
     void update(float timeElapsed);
     void reset(float startX, float startY);
-
+    
 };
