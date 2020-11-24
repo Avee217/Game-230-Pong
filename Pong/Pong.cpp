@@ -1,6 +1,7 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include"Menu.h"
+#include"Obstacle.h"
 #include <sstream>
 #include<iostream>
 #include <cstdlib>
@@ -18,8 +19,8 @@ using namespace sf;
 
 int main()
 {
-	int windowWidth = 800;
-	int windowHeight = 600;
+	float windowWidth = 800;
+	float windowHeight = 600;
 
 	int scoreOne = 0;
 	int scoreTwo = 0;
@@ -94,10 +95,20 @@ int main()
 	menuBackGround.setTexture(texture2);
 
 	// create a paddle
-	Paddle paddleOne(20.0f, windowHeight / 2.0f); 
-	Paddle paddleTwo(windowWidth - 25.0f, windowHeight / 2.0f);
-	Paddle paddleA(20.0f, windowHeight / 1.25f);
-	Paddle paddleB(windowWidth - 25.0f, windowHeight / 1.25f);
+	Paddle paddleOne(20.0f, windowHeight * 0.5f); 
+	Paddle paddleTwo(windowWidth - 25.0f, windowHeight * 0.5f);
+	Paddle paddleA(20.0f, windowHeight * 0.75f);
+	Paddle paddleB(windowWidth - 25.0f, windowHeight * 0.75f);
+
+	Obstacle obstacle(windowWidth * 0.25f, windowHeight * 0.75f);
+	//obstacle.changeSize(50, 50);
+	//obstacle.rotation(45.0f);
+
+	Obstacle obstacle2(windowWidth * 0.75f, windowHeight * 0.25f);
+	obstacle2.setSpeed(-100.0f);
+	//obstacle2.changeSize(50, 50);
+	//obstacle2.rotation(45.0f);
+	
 
 	// create a ball
 	Ball ball(windowWidth / 2.0f, windowHeight / 2.0f);
@@ -119,6 +130,7 @@ int main()
 	hud.setPosition((windowWidth / 2.0f)-40, 20);
 
 	menuMusic.play();
+	menuMusic.setLoop(true);
 	// This "while" loop goes round and round- perhaps forever
 	while (window.isOpen())
 	{	
@@ -151,8 +163,10 @@ int main()
 							std::cout << "Single player has been pressed" << std::endl;
 							playerCount = 1;
 							gameRunning = true;
+							paddleTwo.setSpeed(150.0f);
 							menuMusic.stop();
 							backgroundMusic.play();
+							backgroundMusic.setLoop(true);
 							backgroundMusic.setVolume(50);
 							break;
 
@@ -162,6 +176,7 @@ int main()
 							gameRunning = true;
 							menuMusic.stop();
 							backgroundMusic.play();
+							backgroundMusic.setLoop(true);
 							backgroundMusic.setVolume(50);
 							break;
 
@@ -170,9 +185,9 @@ int main()
 							playerCount = 4;
 							if (playerCount == 4)
 							{
-								paddleOne.changePosition(20.0f, windowHeight / 4.0f);
+								paddleOne.changePosition(20.0f, windowHeight * 0.25f);
 								paddleOne.changeSize(5, 50);
-								paddleTwo.changePosition(windowWidth - 25.0f, windowHeight / 4.0f);
+								paddleTwo.changePosition(windowWidth - 25.0f, windowHeight *0.25f);
 								paddleTwo.changeSize(5, 50);
 								paddleA.changeSize(5, 50);
 								paddleB.changeSize(5, 50);
@@ -180,6 +195,7 @@ int main()
 							gameRunning = true;
 							menuMusic.stop();
 							backgroundMusic.play();
+							backgroundMusic.setLoop(true);
 							backgroundMusic.setVolume(50);
 							break;
 
@@ -222,18 +238,21 @@ int main()
 			// AI paddle movements
 			if (playerCount == 1) 
 			{
-				aiMoveChoice = paddleTwo.aiMove(ball.getPosition());
-				if (aiMoveChoice > 0)
+				if (ball.getPosition().left > windowWidth * 0.34f) 
 				{
-					paddleTwo.moveDown(timeElapsed,0.0f);
+					aiMoveChoice = paddleTwo.aiMove(ball.getPosition());
+					if (aiMoveChoice > 0)
+					{
+						paddleTwo.moveDown(timeElapsed, 0.0f);
 
+					}
+					if (aiMoveChoice < 0)
+					{
+						paddleTwo.moveUp(timeElapsed, 0.0f);
+					}
+
+					aiMoveChoice = 0;
 				}
-				if (aiMoveChoice < 0)
-				{
-					paddleTwo.moveUp(timeElapsed,0.0f);
-				}
-				
-				aiMoveChoice = 0;
 			}
 
 			//Moving Paddle Two
@@ -261,7 +280,7 @@ int main()
 				//Moving Paddle A
 				if (Keyboard::isKeyPressed(Keyboard::R))
 				{					
-					paddleA.moveUp(timeElapsed,325.0f);
+					paddleA.moveUp(timeElapsed,300.0f);
 				}
 				else if (Keyboard::isKeyPressed(Keyboard::F))
 				{					
@@ -271,7 +290,7 @@ int main()
 				//Moving Paddle B
 				if (Keyboard::isKeyPressed(Keyboard::Y))
 				{					
-					paddleB.moveUp(timeElapsed, 325.0f);
+					paddleB.moveUp(timeElapsed, 300.0f);
 				}
 				else if (Keyboard::isKeyPressed(Keyboard::H))
 				{					
@@ -316,6 +335,7 @@ int main()
 					hud.setPosition((windowWidth / 2.0f) - 40, 20);
 					background.setColor(sf::Color(255, 255, 255, 255));
 					backgroundMusic.play();	
+					backgroundMusic.setLoop(true);
 				}
 
 				//Back to Main menu
@@ -354,6 +374,27 @@ int main()
 			if (ball.getPosition().top < 0 || ball.getPositionBottom()>windowHeight)
 			{
 				ball.reboundTopOrBottom();
+				bump.play();
+			}
+			if (obstacle.getPosition().top < 0 || obstacle.getPositionBottom()>windowHeight)
+			{
+				obstacle.reboundTopOrBottom();
+				bump.play();
+			}
+			if (obstacle2.getPosition().top < 0 || obstacle2.getPositionBottom()>windowHeight)
+			{
+				obstacle2.reboundTopOrBottom();
+				bump.play();
+			}
+
+			if (ball.getPosition().intersects(obstacle.getPosition())) 
+			{
+				ball.reboundObstacle(obstacle.getPosition().top, obstacle.getPosition().height);
+				bump.play();
+			}
+			if (ball.getPosition().intersects(obstacle2.getPosition()))
+			{
+				ball.reboundObstacle(obstacle2.getPosition().top, obstacle2.getPosition().height);
 				bump.play();
 			}
 
@@ -405,6 +446,8 @@ int main()
 					paddleB.update(timeElapsed);
 				}
 				ball.update(timeElapsed);
+				obstacle.update(timeElapsed);
+				obstacle2.update(timeElapsed);
 			}
 
 			// Update the HUD text
@@ -463,6 +506,8 @@ int main()
 				}
 
 				window.draw(ball.getShape());
+				window.draw(obstacle.getShape());
+				window.draw(obstacle2.getShape());
 			}
 
 			// Draw the HUD

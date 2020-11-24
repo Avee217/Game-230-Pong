@@ -58,17 +58,26 @@ Q - Return to Menu after game ends
 Space - Restart current game mode
 
 
-Secondary Objective M
+Secondary Objective M:
 The game has a 2-player (human-versus-human) option in addition to the normal 1-player (human-versus-AI) mode.
 
-Secondary Objective N
+Secondary Objective N:
 The game has more than 2 players. These extra players may be controlled by the A.I. or other humans; your choice. How the game is re-designed to accommodate these extra players is up to you!
 
-Secondary Objective S
+Secondary Objective O:
+There is a Moving Obstacle in the middle of the playing area that the ball bounces off of when hit.
+
+Secondary Objective S:
+
 Music when game starts
+
 Sound effect whem ball hits paddle
+
 Sound effect whem ball hits edge of the screen
+
 Sound effect when player scores a point
+
 Sound effect when player wins
+
 
 

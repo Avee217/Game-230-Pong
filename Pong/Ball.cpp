@@ -57,6 +57,12 @@ void Ball::reboundPaddleRight(float paddleY, float paddleHeight)
     xVelocity = -xVelocity;
     yVelocity = -100 * (1.0f-paddleHitPos);
 }
+void Ball::reboundObstacle(float paddleY, float paddleHeight) {
+    position.x -= (xVelocity / 30);
+    xVelocity = -xVelocity;
+    float paddleHitPos = (position.y - paddleY) / (paddleHeight / 2);
+    yVelocity = -100 * (1.0f - paddleHitPos);
+}
 
 void Ball::hitOut(float check)
 {

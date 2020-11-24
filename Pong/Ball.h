@@ -30,6 +30,7 @@ public:
 
     void reboundPaddleLeft(float paddleY, float paddleHeight);
     void reboundPaddleRight(float paddleY, float paddleHeight);
+    void reboundObstacle(float paddleY, float paddleHeight);
 
     void hitOut(float check);
 

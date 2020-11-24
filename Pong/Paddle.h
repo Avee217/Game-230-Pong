@@ -5,7 +5,7 @@ using namespace sf;
 
 class Paddle
 {
-protected:
+private:
     Vector2f position;
     float paddleHeight;
     float paddleWidth;

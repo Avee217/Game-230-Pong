@@ -78,3 +78,4 @@ int Paddle::aiMove(FloatRect ballPosition) {
     }
     return 0;
 }
+
